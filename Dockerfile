@@ -12,7 +12,7 @@ RUN npm ci --only=production
 # Copier les fichiers nécessaires pour le build
 COPY resources ./resources
 COPY vite.config.js ./
-COPY tailwind.config.js ./
+#COPY tailwind.config.js ./
 
 # Build des assets
 RUN npm run build
