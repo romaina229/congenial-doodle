@@ -1,0 +1,83 @@
+services:
+  # Web Service
+  - type: web
+    name: laravel-app
+    env: docker
+    region: oregon
+    plan: starter
+    
+    # Build configuration
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    
+    # Environment variables
+    envVars:
+      - key: APP_NAME
+        value: Laravel
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        sync: false
+      - key: APP_KEY
+        generateValue: true
+      - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_LEVEL
+        value: error
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: SESSION_DRIVER
+        value: file
+      - key: SESSION_LIFETIME
+        value: 120
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: CACHE_DRIVER
+        value: file
+      - key: AUTO_MIGRATE
+        value: true
+      - key: OPTIMIZE
+        value: true
+    
+    # Health check
+    healthCheckPath: /
+    
+    # Auto deploy
+    autoDeploy: true
+
+  # Database (si vous utilisez Render pour la base de données)
+  - type: pserv
+    name: laravel-db
+    env: docker
+    region: oregon
+    plan: starter
+    dockerfilePath: ./Dockerfile.db
+    dockerContext: .
+    
+    # Persistant disk pour les données
+    disk:
+      name: db-data
+      mountPath: /var/lib/mysql
+      sizeGB: 10
+    
+    envVars:
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
+      - key: MYSQL_DATABASE
+        value: laravel
+      - key: MYSQL_USER
+        value: laravel
+      - key: MYSQL_PASSWORD
+        generateValue: true
